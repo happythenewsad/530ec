@@ -2,6 +2,8 @@ import pprint
 import argparse
 import math
 import numpy as np
+
+from Utils import Utils
 from scipy.stats import pearsonr
 
 pp = pprint.PrettyPrinter()
@@ -9,27 +11,6 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--goldfile', type=str, required=True)
 parser.add_argument('--predfile', type=str, required=True)
-
-
-def readLabels(datafile):
-    ''' Datafile contains 3 columns,
-        col1: hyponym
-        col2: hypernym
-        col3: label
-    '''
-
-    labels = []
-    with open(datafile, 'r') as f:
-        inputlines = f.read().strip().split('\n')
-
-    for line in inputlines:
-        hypo, hyper, label = line.split('\t')
-        if label == 'True':
-            labels.append(1)
-        else:
-            labels.append(0)
-
-    return labels
 
 
 def main(args):
