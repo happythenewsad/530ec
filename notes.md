@@ -13,3 +13,26 @@ pearson is in evaluate.py already
  seems like the STS wiki is a good resource
 
  find eval script in google groups?
+
+python3 evaluate.py --goldfile data/en-test.txt --predfile simple_baseline_test.txt 
+Namespace(goldfile='data/en-test.txt', predfile='simple_baseline_test.txt')
+4.200668258079036 average for 10 with gs 5.0
+0.5801012526148436 average for 11 with gs 0.0
+Performance: 0.7112355581576367
+
+
+3.2.6: vectorize sentences using inter-sentence vocabulary such that index 1 of sentence A is favoried if index 1 of sentance B conatins a synonym
+
+TODO:
+lemmatization - stemming etc
+BOW but with word2vec synonyms?
+POS - favor pairs that have same POS sequence
+	edit distance between POS sequences?
+
+alignments
+Hungarian algorithm (Kuhn, 1955) implemented in the SEMILAR Toolkit (Rus et al., 2013).
+
+
+sent2vec
+
+Good signal in BOW, but am going to try PCA, random forest, TFIDF vocab - look for least common?

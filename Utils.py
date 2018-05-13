@@ -1,3 +1,5 @@
+from scipy import spatial
+
 class Utils:
 	# order of vocab matters. it has been deduped
 	@staticmethod
@@ -30,9 +32,29 @@ class Utils:
 		unique_words = list(set(words))
 		unique_words.sort()
 		return unique_words
-        
 
+	@staticmethod
+	def gen_baseline_labels(inp, outp, vocab):
+		with open(inp,'r') as f1:
+		    val = f1.readlines()
+		    
+		results = []
+		for idx, line in enumerate(val):
+		    segments = line.split('\t')
+		    first_seg = segments[0].split()
+		    second_seg = segments[1].split()
+		    
+		    first_seg_vec = Utils.bow_to_vec(vocab, set(first_seg))
+		    second_seg_vec = Utils.bow_to_vec(vocab, set(second_seg))
+		    result = (1 - spatial.distance.cosine(first_seg_vec, second_seg_vec)) * 5
+		    results.append(result)
+		    
+		    if idx % 100 == 0:
+		        print(idx, result)        
 
+		with open(outp, 'w') as f:      
+		    for score in results:
+		        f.write("{}\n".format(score)) 
 
 
 
