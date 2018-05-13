@@ -32,6 +32,7 @@ lemmatization - stemming etc
 BOW but with word2vec synonyms?
 POS - favor pairs that have same POS sequence
 	edit distance between POS sequences?
+	intersection of POS tags as a feature?
 
 alignments
 Hungarian algorithm (Kuhn, 1955) implemented in the SEMILAR Toolkit (Rus et al., 2013).
@@ -40,3 +41,8 @@ Hungarian algorithm (Kuhn, 1955) implemented in the SEMILAR Toolkit (Rus et al.,
 sent2vec
 
 Good signal in BOW, but am going to try PCA, random forest, TFIDF vocab - look for least common?
+
+
+random forest - only class prediction?
+
+Q how do their classifiers map to 0-5?
