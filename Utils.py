@@ -34,12 +34,9 @@ class Utils:
 		return unique_words
 
 	@staticmethod
-	def gen_baseline_labels(inp, outp, vocab):
-		with open(inp,'r') as f1:
-		    val = f1.readlines()
-		    
+	def gen_cosine_sim_feature(lines, vocab):
 		results = []
-		for idx, line in enumerate(val):
+		for idx, line in enumerate(lines):
 		    segments = line.split('\t')
 		    first_seg = segments[0].split()
 		    second_seg = segments[1].split()
@@ -49,13 +46,61 @@ class Utils:
 		    result = (1 - spatial.distance.cosine(first_seg_vec, second_seg_vec)) * 5
 		    results.append(result)
 		    
-		    if idx % 100 == 0:
-		        print(idx, result)        
+		    if idx % 1000 == 0:
+		        print(idx, result)
+
+		return results
+
+	@staticmethod
+	def extract_labels(inp):
+		labels = []
+		with open(inp,'r') as f1:
+		    lines = f1.readlines()
+		for idx, line in enumerate(lines):
+		    segments = line.split('\t')
+		    score = segments[-1].strip()
+		    labels.append(float(score))
+		return labels
+
+	@staticmethod
+	def gen_baseline_labels(inp, outp, vocab):
+		with open(inp,'r') as f1:
+		    lines = f1.readlines()
+		    
+		results = Utils.gen_cosine_sim_feature(lines, vocab)
 
 		with open(outp, 'w') as f:      
 		    for score in results:
 		        f.write("{}\n".format(score)) 
 
+    
+    # CITATION: This function derived from external Porter source
+	def stem(stemmer, words):
+		return [stemmer.stem(word, 0,len(word)-1) for word in words]
+
+
+
+# if __name__ == '__main__':
+#     p = PorterStemmer()
+#     if len(sys.argv) > 1:
+#         for f in sys.argv[1:]:
+#             infile = open(f, 'r')
+#             while 1:
+#                 output = ''
+#                 word = ''
+#                 line = infile.readline()
+#                 if line == '':
+#                     break
+#                 for c in line:
+#                     if c.isalpha():
+#                         word += c.lower()
+#                     else:
+#                         if word:
+#                             output += p.stem(word, 0,len(word)-1)
+#                             word = ''
+#                         output += c.lower()
+#                 print output,
+#             infile.close()
 
 
 	# def readLabels(datafile):

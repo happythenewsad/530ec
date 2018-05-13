@@ -23,6 +23,10 @@ Performance: 0.7112355581576367
 
 3.2.6: vectorize sentences using inter-sentence vocabulary such that index 1 of sentence A is favoried if index 1 of sentance B conatins a synonym
 
+# how many unique words are there in train?
+#19850
+
+
 TODO:
 lemmatization - stemming etc
 BOW but with word2vec synonyms?
