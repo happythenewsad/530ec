@@ -1,4 +1,7 @@
 from scipy import spatial
+from PorterStemmer import PorterStemmer
+from sklearn.feature_extraction import DictVectorizer
+import spacy
 
 class Utils:
 	# order of vocab matters. it has been deduped
@@ -17,29 +20,89 @@ class Utils:
 
 	# returns unique sorted vocab
 	@staticmethod
-	def file_to_vocab(file):
+	def file_to_vocab(file, stem=True):
+		porter = PorterStemmer()
 		with open("data/en-train.txt",'r') as f1:
-		    train = f1.readlines()
-		    words = []
-		    
-		    for ln in train:
-		        segments = ln.split('\t')
-		        first_seg = segments[0].split()
-		        second_seg = segments[1].split()
-		        words.extend(first_seg)
-		        words.extend(second_seg)
+			train = f1.readlines()
+			words = []
+
+			for ln in train:
+				segments = ln.split('\t')
+				first_seg = segments[0].split()
+				second_seg = segments[1].split()
+
+				if stem:
+					first_seg = Utils.stem(porter, first_seg)
+					second_seg = Utils.stem(porter, second_seg)
+
+				words.extend(first_seg)
+				words.extend(second_seg)
 
 		unique_words = list(set(words))
 		unique_words.sort()
 		return unique_words
 
+
 	@staticmethod
-	def gen_cosine_sim_feature(lines, vocab):
+	def normalized_abs_diff(featName, featDict):
+		if (('first_'+featName) in featDict) and (('second_'+featName) in featDict):
+			doc1val = featDict['first_'+featName]
+			doc2val = featDict['second_'+featName]
+			return abs(doc1val - doc2val)/(doc1val + doc2val)
+		return float(0)
+
+	@staticmethod
+	def gen_pos_ner_features(infile):
+		rows = []
+		pos_types = ['ADJ','ADV','NOUN','NUM','PROPN','VERB']
+
+		nlp = spacy.load('en_core_web_sm')
+
+		with open(infile,'r') as f1:
+			lines = f1.readlines()
+			for line in lines:
+				posdict = {}
+				row_features = {}
+				segments = line.split('\t')
+				first_seg = segments[0]
+				second_seg = segments[1]
+
+				doc1 = nlp(first_seg)
+				doc2 = nlp(second_seg)
+
+				for token in doc1:
+				    if token.pos_ in pos_types:
+				        if 'first_'+token.pos_ in posdict:
+				            posdict['first_'+token.pos_] += 1
+				        else:
+				            posdict['first_'+token.pos_] = 1
+				            
+				for token in doc2:
+				    if token.pos_ in pos_types:
+				        if 'second_'+token.pos_ in posdict:
+				            posdict['second_'+token.pos_] += 1
+				        else:
+				            posdict['second_'+token.pos_] = 1
+				  
+				for typ in pos_types:
+					row_features['abs_diff_'+typ] = Utils.normalized_abs_diff(typ, posdict)
+
+				rows.append(row_features)
+    
+		return rows  
+
+	@staticmethod
+	def gen_cosine_sim_feature(lines, vocab, stem=True):
+		porter = PorterStemmer()
 		results = []
 		for idx, line in enumerate(lines):
 		    segments = line.split('\t')
 		    first_seg = segments[0].split()
 		    second_seg = segments[1].split()
+
+		    if stem:
+		    	first_seg = Utils.stem(porter, first_seg)
+		    	second_seg = Utils.stem(porter, second_seg)
 		    
 		    first_seg_vec = Utils.bow_to_vec(vocab, set(first_seg))
 		    second_seg_vec = Utils.bow_to_vec(vocab, set(second_seg))
@@ -74,7 +137,7 @@ class Utils:
 		        f.write("{}\n".format(score)) 
 
     
-    # CITATION: This function derived from external Porter source
+    # convenience wrapper for Porter stemmer
 	def stem(stemmer, words):
 		return [stemmer.stem(word, 0,len(word)-1) for word in words]
 
