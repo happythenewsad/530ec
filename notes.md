@@ -45,48 +45,73 @@ Performance: 0.5935844434325268
 KRM with porter, POS, test:
 Performance: 0.7289798024103769
 
+porter, POS, ner, val:
+Performance: 0.5940330229859941
+
+porter, POS, ner, test:
+Performance: 0.7290702218576988
+
+porter, POS, ner,, RBF val:
+Performance: 0.5991922333329962
+
+porter, POS, ner,, RBF test:
+Performance: 0.7406295258551159
 
 
-3.2.6: vectorize sentences using inter-sentence vocabulary such that index 1 of sentence A is favoried if index 1 of sentance B conatins a synonym
+porter, POS, ner,, RBF .5 alpha val:
+Performance: 0.5998956663978675
+
+porter, POS, ner,, RBF .5 alpha test:
+Performance: 0.740929894376735
+
+
+porter, POS, ner,, RBF .5 alpha .8 gamma val:
+Performance: 0.6072420908867939
+
+porter, POS, ner,, RBF .5 alpha .8 gamma test:
+Performance: 0.7382601961971023
+
+porter, POS, ner,, RBF .5 alpha .4 gamma val:
+Performance: 0.6072420908867939
+
+
+
+
+
 
 # how many unique words are there in train?
 #19850
 
-'ADJ',
- 'ADP',
- 'ADV',
- 'CCONJ',
- 'DET',
- 'INTJ',
- 'NOUN',
- 'NUM',
- 'PART',
- 'PRON',
- 'PROPN',
- 'PUNCT',
- 'SPACE',
- 'SYM',
- 'VERB',
- 'X'
+RF, POS, NER, est=10, val:
+Performance: 0.5713921178463931
 
-entities:
-0,
- 378,
- 379,
- 381,
- 382,
- 383,
- 384,
- 385,
- 386,
- 388,
- 389,
- 390,
- 391,
- 392,
- 393,
- 394,
- 448,
+RF, POS, NER, est=10, test:
+Performance: 0.5923193692438096
+
+RF, POS, NER, est=20, val:
+Performance: 0.5750611048755191
+
+RF, POS, NER, est=20, test:
+Performance: 0.6009647642732455
+
+RF, POS, NER, est=40, val:
+Performance: 0.5808596287306547
+
+RF, POS, NER, est=40, test:
+Performance: 0.6084645212408156
+
+RF, POS, NER, est=80, val:
+Performance: 0.5848848747796371
+
+RF, POS, NER, est=80, test:
+Performance: 0.6108458768960248
+
+RF, POS, NER, est=160, val:
+Performance: 0.5857055518307862
+
+RF, POS, NER, est=160, test:
+Performance: 0.6109141599122807
+
 
 
 TODO:
@@ -114,3 +139,14 @@ Good signal in BOW, but am going to try PCA, random forest, TFIDF vocab - look f
 random forest - only class prediction?
 
 Q how do their classifiers map to 0-5?
+
+
+3.2.6: vectorize sentences using inter-sentence vocabulary such that index 1 of sentence A is favoried if index 1 of sentance B conatins a synonym
+
+analysis
+========
+most important RF feature was last one: 7.06082346e-01
+ aka cosine
+
+
+indicates further improvements using synonyms

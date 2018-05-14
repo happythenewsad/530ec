@@ -26,6 +26,18 @@ def main(args):
             debug0 = [pred[idx] for idx,p in enumerate(pred) if 0 == int(p)]
             print(np.mean(debug5), "average for", len(debug5),"with gs 5.0")
             print(np.mean(debug0), "average for", len(debug0),"with gs 0.0")
+
+            # gold_and_pred = zip(gold,pred)
+            # differences = [abs(x-y) for (x,y) in gold_and_pred]
+            # max_idx = -1
+            # mx = 0
+            # for idx,elem in enumerate(differences):
+            #     if elem > mx:
+            #         max_idx = idx
+            #         mx = elem
+            # print(mx)
+            # print(max_idx)
+
     # https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.pearsonr.html
     ret = pearsonr(gold,pred)[0]
         

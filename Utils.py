@@ -55,12 +55,17 @@ class Utils:
 	def gen_pos_ner_features(infile):
 		rows = []
 		pos_types = ['ADJ','ADV','NOUN','NUM','PROPN','VERB']
+		ent_types = ['PERSON', 'NORP','ORG','GPE', 'LOC', 'PRODUCT', 'EVENT', 'WORK_OF_ART',
+			'DATE', 'TIME', 'LANGUAGE', 'MONEY', 'QUANTITY', 'ORDINAL', 'CARDINAL']
 
 		nlp = spacy.load('en_core_web_sm')
 
 		with open(infile,'r') as f1:
 			lines = f1.readlines()
-			for line in lines:
+			#lines = lines[:10]
+			for idx,line in enumerate(lines):
+				if idx % 1000 == 0:
+					print(idx)
 				posdict = {}
 				row_features = {}
 				segments = line.split('\t')
@@ -83,10 +88,29 @@ class Utils:
 				            posdict['second_'+token.pos_] += 1
 				        else:
 				            posdict['second_'+token.pos_] = 1
-				  
+
+
+				for ent in doc1.ents:
+					if ent.label_ in ent_types:
+						if 'first_'+ent.label_ in posdict:
+							posdict['first_'+ent.label_] += 1
+						else:
+							posdict['first_'+ent.label_] = 1
+
+				for ent in doc2.ents:
+					if ent.label_ in ent_types:
+						if 'second_'+ent.label_ in posdict:
+							posdict['second_'+ent.label_] += 1
+						else:
+							posdict['second_'+ent.label_] = 1
+
+				for ent in ent_types:
+					row_features['abs_diff_'+ent] = Utils.normalized_abs_diff(ent, posdict)
+
 				for typ in pos_types:
 					row_features['abs_diff_'+typ] = Utils.normalized_abs_diff(typ, posdict)
 
+				#print(posdict, '------\n')
 				rows.append(row_features)
     
 		return rows  
